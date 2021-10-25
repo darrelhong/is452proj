@@ -11,7 +11,7 @@ contract CommodityTradeMatching {
     // Type of Commodity:
     //    Agricultural --> Cattle, Lumber, Soya Bean
     //    Energy --> Coal, Crude Oil, Gasoline, Heating Oil, Natural Gas
-    //    Metals --> Aluminum, Copper, Gold, Nickel, Palladium, Platium, Silver, Steel, Zine
+    //    Metals --> Aluminum, Copper, Gold, Nickel, Palladium, Platium, Silver, Steel, Zinc
     string private commodityType;
     uint256 private commodityPrice;
     uint256 private commodityUnit;

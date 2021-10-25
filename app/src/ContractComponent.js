@@ -35,7 +35,7 @@ export default ({
   } = contractState.getInfo?.[dataKey]?.value || {};
 
   return (
-    <div className="row">
+    <div className="row mb-5">
       <div className="row">
         <div className="d-flex align-items-baseline">
           <h3 className="me-2">{contractName}</h3>
