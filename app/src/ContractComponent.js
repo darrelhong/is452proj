@@ -37,7 +37,10 @@ export default ({
   return (
     <div className="row">
       <div className="row">
-        <h3>{contractName}</h3>
+        <div className="d-flex align-items-baseline">
+          <h3 className="me-2">{contractName}</h3>
+          <p className="text-secondary">{contractInstance.address}</p>
+        </div>
         <p>Buyer Address: {buyerAddress}</p>
         <p>Seller Address: {sellerAddress}</p>
         <p>CommodityCategory: {_commodityCategory}</p>
