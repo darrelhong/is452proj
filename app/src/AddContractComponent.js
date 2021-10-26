@@ -53,7 +53,7 @@ export default ({ drizzle, drizzleState, currentAccountIndex }) => {
 
       drizzle.addContract(
         {
-          contractName: "NewCommodityTradeMatching",
+          contractName: `CommodityTradeMatching (${newContract.options.address.substring(0,7)})`,
           web3Contract: newContract,
         },
         ["StatusChanged"]
