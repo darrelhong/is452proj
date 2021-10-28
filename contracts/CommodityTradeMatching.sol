@@ -43,7 +43,7 @@ contract CommodityTradeMatching {
     ) {
         require(
             tx.origin == buyerAddress || tx.origin == sellerAddress,
-            "Only buyer(client)/seller(dealer) can submit bid price/ask price in the negotiation process"
+            "Only Seller/Dealer can submit the Commodity Type, Ask Price and Quantity Available"
         );
         buyer = buyerAddress;
         seller = sellerAddress;
@@ -82,7 +82,7 @@ contract CommodityTradeMatching {
     }
 
     function inNegotiation() public {
-        // Only buyer can approve the trade
+        // Only Buyer can accept the open trade and change the status to in-negotiation with the Seller
         require(
             msg.sender == buyer,
             "Only buyer can set the trade to in-negotiation"
