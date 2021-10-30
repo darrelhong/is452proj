@@ -8,7 +8,7 @@ module.exports = function (deployer, network, accounts) {
     123456,
     "Energy",
     "Metals",
-    9999,
-    99
+    10,
+    2
   );
 };

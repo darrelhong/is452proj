@@ -3,7 +3,6 @@ import AddContractComponent from "./AddContractComponent";
 import ContractComponent from "./ContractComponent";
 
 export default ({ drizzle, drizzleState }) => {
-  const { web3 } = drizzle;
   const { accounts, contracts } = drizzleState;
   // set account
   const [currentAccountIndex, setAccountIndex] = useState(0);
