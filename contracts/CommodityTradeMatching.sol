@@ -13,15 +13,19 @@ contract CommodityTradeMatching {
     //    Energy --> Coal, Crude Oil, Gasoline, Heating Oil, Natural Gas
     //    Metals --> Aluminum, Copper, Gold, Nickel, Palladium, Platium, Silver, Steel, Zinc
     string private commodityType;
+    // CommodityPrice is assumed to be in ethers
     uint256 private commodityPrice;
     uint256 private commodityUnit;
+
+    mapping(address => uint256) balances;
 
     enum Status {
         Open,
         InNegotiation,
         Approved,
         Rejected,
-        Paid
+        Paid,
+        PaymentVerified
     }
 
     Status private tradeStatus;
@@ -81,6 +85,14 @@ contract CommodityTradeMatching {
         );
     }
 
+    function amount() public view returns (uint256) {
+        // amount_to_pay is in ethers
+        uint256 amount_to_pay = uint256(commodityPrice) *
+            uint256(commodityUnit) *
+            1000000000000000000;
+        return amount_to_pay;
+    }
+
     function inNegotiation() public {
         // Only Buyer can accept the open trade and change the status to in-negotiation with the Seller
         require(
@@ -88,10 +100,7 @@ contract CommodityTradeMatching {
             "Only buyer can set the trade to in-negotiation"
         );
         // Only in-negotiation can be Approved
-        require(
-            tradeStatus == Status.Open,
-            "Trade not in Open status"
-        );
+        require(tradeStatus == Status.Open, "Trade not in Open status");
         Status previousStatus = tradeStatus;
         tradeStatus = Status.InNegotiation;
         emit StatusChanged(previousStatus, tradeStatus, block.timestamp);
@@ -123,19 +132,39 @@ contract CommodityTradeMatching {
         emit StatusChanged(previousStatus, tradeStatus, block.timestamp);
     }
 
-    function paid() public {
+    function paymentToContract() public payable {
+        require(msg.sender == buyer, "Only buyer can pay");
+        require(
+            tradeStatus == Status.Approved,
+            "Only approved orders can be Paid"
+        );
+        require(msg.value == amount(), "Payment must be in correct amount");
+        Status previousStatus = tradeStatus;
+        tradeStatus = Status.Paid;
+        emit StatusChanged(previousStatus, tradeStatus, block.timestamp);
+        balances[msg.sender] += msg.value;
+    }
+
+    function contractValue() public view returns (uint256) {
+        return address(this).balance;
+    }
+
+    function withdrawMoney() public {
+        address payable to = payable(msg.sender);
+        require(msg.sender == seller, "Only seller can receive payment");
+        to.transfer(contractValue());
+    }
+
+    function paymentVerified() public {
         // Only the seller can set status to paid for the trade negotiation.
         require(
             msg.sender == seller,
             "Only seller can set paid Status for the trade"
         );
         // Only Approved negotiations can be set to paid
-        require(
-            tradeStatus == Status.Approved,
-            "Trade not yet approved"
-        );
+        require(tradeStatus == Status.Paid, "Trade not yet paid");
         Status previousStatus = tradeStatus;
-        tradeStatus = Status.Paid;
+        tradeStatus = Status.PaymentVerified;
         emit StatusChanged(previousStatus, tradeStatus, block.timestamp);
     }
 }
